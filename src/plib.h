@@ -29,7 +29,7 @@ static int execute(const char *path)
     return status;
 }
 
-char readchar()
+static char readchar()
 {
     char c = 0;
     if(console == 0) open("/dev/console", O_RDWR | O_NDELAY); // open console
@@ -37,7 +37,7 @@ char readchar()
     return c; // return character
 }
 
-int readline(char *buff, int len)
+static int readline(char *buff, int len)
 {   
     for (int i = 0; i<len;i++)
     {
