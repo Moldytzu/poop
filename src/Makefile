@@ -4,6 +4,6 @@ CCFLAGS =
 SOURCES = 
 
 build: $(shell pwd)/*.c
-	for file in "$^ " ; do \
+	for file in $(shell pwd)/*.c ; do \
 		${CC} ${CCFLAGS} $${file} -o ../rootfs/bin/$$(basename "$${file%.*}"); \
 	done
