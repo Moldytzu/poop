@@ -11,14 +11,13 @@
 
 static unsigned long console = 0; // console file descriptor
 
-static int execute(const char *path)
+static int executea(const char *path, char *argv[])
 {
     int pid;
     switch(pid = vfork()) // spawn child
     {
         case 0: // child
         {
-            char *argv[] = {(char*)path, NULL};
             execv(path,argv); // execute
             break;
         }
@@ -28,6 +27,12 @@ static int execute(const char *path)
     int status;
     waitpid(pid, &status, 0); // wait for pid to quit 
     return status;
+}
+
+static int execute(const char *path)
+{
+    char *argv[] = {(char*)path, NULL};
+    return executea(path,argv); // wrap the argv
 }
 
 static char readchar()

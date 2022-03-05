@@ -56,9 +56,6 @@ int main()
     char buffer[] = {'2'};
     write(printk, buffer, 1); // write the buffer to /proc/sys/kernel/printk
 
-    if (console == 0)
-        open("/dev/console", O_RDWR | O_NDELAY); // open console
-
     loop(); // do the init loop
     return 0;
 }

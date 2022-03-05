@@ -14,7 +14,15 @@ int main()
         if(strcmp(buffer,"exit") == 0)
             exit(0); // exit
         else
-            printf("Unknown command %s\n", buffer);
+        {
+            if(access(buffer,F_OK) != 0) // check if file exists
+            {
+                printf("Unknown command: %s\n", buffer);
+                continue;
+            }
+
+            execute(buffer); // execute file
+        }
     }
     return 0;
 }
