@@ -26,6 +26,12 @@ int main()
     // disable stdout buffering
     setvbuf(stdout, NULL, _IONBF, 0);
 
+    if(getpid() != 1) // we need pid 1
+    {
+        printf("Failed to run init under PID %d.\n",getpid());
+        exit(0);
+    }
+
     // display branding message
     printf("poop Init System\n");
 
