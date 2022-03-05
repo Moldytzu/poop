@@ -4,7 +4,7 @@
 
 int main()
 {
-    sync(); // sync filesystems
+    sync();                             // sync filesystems
     reboot(LINUX_REBOOT_CMD_POWER_OFF); // do shutdown
     return 0;
 }

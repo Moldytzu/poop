@@ -3,7 +3,8 @@
 void hang()
 {
     printf("Hanging...\n"); // display a message
-    while (1); // while loop of death
+    while (1)
+        ; // while loop of death
 }
 
 void loop()
@@ -26,9 +27,9 @@ int main()
     // disable stdout buffering
     setvbuf(stdout, NULL, _IONBF, 0);
 
-    if(getpid() != 1) // we need pid 1
+    if (getpid() != 1) // we need pid 1
     {
-        printf("Failed to run init under PID %d.\n",getpid());
+        printf("Failed to run init under PID %d.\n", getpid());
         exit(0);
     }
 

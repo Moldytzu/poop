@@ -3,7 +3,7 @@
 
 int main()
 {
-    sync(); // sync filesystems
+    sync();              // sync filesystems
     reboot(RB_AUTOBOOT); // do reboot
     return 0;
 }
