@@ -7,6 +7,8 @@ LINUX_MAJOR=5
 LIBC_VERSION=2.34
 
 initrd: root kernel libc apps
+	cd $(ROOTFS) && ln -s "./bin/init" "./init"
+	cd $(ROOTFS) && chmod -R 777 .
 	cd $(ROOTFS) && find . | cpio -R root:root -H newc -o > "${OUTPUT}/initrd.img"
 
 apps:
@@ -40,10 +42,13 @@ libc:
 		tar -xf $(LIBC)/glibc-$(LIBC_VERSION).tar.xz -C $(LIBC)/src/; \
 	fi
 	@ if ! [ -d "$(LIBC)/src/glibc-$(LIBC_VERSION)/build" ]; then \
-		cd $(LIBC)/src/glibc-$(LIBC_VERSION)/ && mkdir build && cd build && ../configure --enable-kernel=3.2 --prefix="/"; \
+		cd $(LIBC)/src/glibc-$(LIBC_VERSION)/ && mkdir build && cd build && ../configure --disable-timezone-tools --disable-build-nscd --disable-nscd --enable-kernel=3.2 --prefix="/usr/"; \
 	fi
 	$(MAKE) -C $(LIBC)/src/glibc-$(LIBC_VERSION)/build -j$(shell nproc)
 	$(MAKE) -C $(LIBC)/src/glibc-$(LIBC_VERSION)/build DESTDIR=$(ROOTFS) install -j$(shell nproc)
 
 clean:
 	rm -rf $(ROOTFS) $(LINUX) $(LIBC)
+	
+run: initrd
+	qemu-system-x86_64 -kernel ${LINUX}/src/linux-$(LINUX_VERSION)/arch/x86/boot/bzImage -initrd $(OUTPUT)/initrd.img -m 512M
