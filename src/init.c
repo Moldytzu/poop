@@ -36,6 +36,11 @@ int main()
         hang();
     }
 
+    // set printk to the second level
+    int printk = open("/proc/sys/kernel/printk",O_WRONLY | O_APPEND); // append, write only
+    char buffer[] = {'2'};
+    write(printk,buffer,1); // write the buffer to /proc/sys/kernel/printk
+
     // execute our shell
     printf("Executing: /bin/psh\n");
     int status = execute("/bin/psh");
