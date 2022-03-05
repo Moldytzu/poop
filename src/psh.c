@@ -9,7 +9,12 @@ int main()
     {
         printf("psh >> "); // write prompt
         char buffer[256];
-        printf("%d -> %s\n",readline(buffer,256),buffer);
+        readline(buffer,256); // read from the keyboard into the buffer
+
+        if(strcmp(buffer,"exit") == 0)
+            exit(0); // exit
+        else
+            printf("Unknown command %s\n", buffer);
     }
     return 0;
 }
