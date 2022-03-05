@@ -2,3 +2,4 @@ rootfs
 linux
 libc
 initrd.img
+.vscode

@@ -6,8 +6,11 @@ LINUX_VERSION=5.16.12
 LINUX_MAJOR=5
 LIBC_VERSION=2.34
 
-initrd: root kernel libc
+initrd: root kernel libc apps
 	cd $(ROOTFS) && find . | cpio -R root:root -H newc -o > "${OUTPUT}/initrd.img"
+
+apps:
+	$(MAKE) -C $(OUTPUT)/src
 
 root:
 	@ if [ -d "${ROOTFS}" ]; then \
