@@ -1,7 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "plib.h"
-#include <sys/mount.h>
 
 void hang()
 {

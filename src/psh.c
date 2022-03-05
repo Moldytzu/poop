@@ -1,10 +1,15 @@
-#include <stdio.h>
+#include "plib.h"
 
 int main()
 {
     // disable stdout buffering
     setvbuf(stdout, NULL, _IONBF, 0);
     
-    printf("psh");
+    while(1)
+    {
+        printf("psh >> "); // write prompt
+        char buffer[256];
+        printf("%d -> %s\n",readline(buffer,256),buffer);
+    }
     return 0;
 }
