@@ -1,6 +1,6 @@
-ROOTFS=rootfs
-LINUX=linux
-LIBC=libc
+ROOTFS=$(shell pwd)/rootfs
+LINUX=$(shell pwd)/linux
+LIBC=$(shell pwd)/libc
 LINUX_VERSION=5.16.12
 LINUX_MAJOR=5
 LIBC_VERSION=2.34
@@ -24,12 +24,21 @@ kernel:
 	@ if ! [ -f "${LINUX}/src/linux-$(LINUX_VERSION)/.config" ]; then \
 		cd ${LINUX}/src/linux-$(LINUX_VERSION)/ && $(MAKE) defconfig; \
 	fi
-	cd ${LINUX}/src/linux-$(LINUX_VERSION)/ && $(MAKE) -j$(shell nproc)
+	$(MAKE) -C ${LINUX}/src/linux-$(LINUX_VERSION)/ -j$(shell nproc)
 
+.PHONY: libc
 libc:
 	@ echo "Downloading libc $(LIBC_VERSION)"
 	mkdir -p $(LIBC) $(LIBC)/src
 	wget -nc https://ftp.gnu.org/gnu/glibc/glibc-$(LIBC_VERSION).tar.xz -P $(LIBC)
+	@ if ! [ -d "${LIBC}/src/glibc-$(LIBC_VERSION)" ]; then \
+		tar -xf $(LIBC)/glibc-$(LIBC_VERSION).tar.xz -C $(LIBC)/src/; \
+	fi
+	@ if ! [ -d "$(LIBC)/src/glibc-$(LIBC_VERSION)/build" ]; then \
+		cd $(LIBC)/src/glibc-$(LIBC_VERSION)/ && mkdir build && cd build && ../configure --enable-kernel=3.2 --prefix="/"; \
+	fi
+	$(MAKE) -C $(LIBC)/src/glibc-$(LIBC_VERSION)/build -j$(shell nproc)
+	$(MAKE) -C $(LIBC)/src/glibc-$(LIBC_VERSION)/build DESTDIR=$(ROOTFS) install -j$(shell nproc)
 
 clean:
-	rm -rf $(ROOTFS) $(LINUX)
+	rm -rf $(ROOTFS) $(LINUX) $(LIBC)
