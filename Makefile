@@ -1,5 +1,6 @@
 ROOTFS=$(shell pwd)/rootfs
 LINUX=$(shell pwd)/linux
+OVERLAY=$(shell pwd)/overlay
 LIBC=$(shell pwd)/libc
 OUTPUT=$(shell pwd)
 LINUX_VERSION=5.16.12
@@ -7,6 +8,7 @@ LINUX_MAJOR=5
 LIBC_VERSION=2.34
 
 initrd: root kernel libc apps
+	cp -rf $(OVERLAY)/* $(ROOTFS)
 	cd $(ROOTFS) && ln -s "./bin/init" "./init"
 	cd $(ROOTFS) && chmod -R 777 .
 	cd $(ROOTFS) && find . | cpio -R root:root -H newc -o > "${OUTPUT}/initrd.img"
