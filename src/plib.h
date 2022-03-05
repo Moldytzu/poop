@@ -8,8 +8,19 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <time.h>
+#include <ctype.h>
 
 static unsigned long console = 0; // console file descriptor
+
+static int isempty(const char *s)
+{
+  while (*s) {
+    if (!isspace(*s))
+      return 0;
+    s++;
+  }
+  return 1;
+}
 
 static int executea(const char *path, char *argv[])
 {

@@ -11,6 +11,8 @@ int main()
         char buffer[256];
         readline(buffer,256); // read from the keyboard into the buffer
 
+        if(isempty(buffer)) continue; // skip whitespace
+
         if(strcmp(buffer,"exit") == 0)
             exit(0); // exit
         else
