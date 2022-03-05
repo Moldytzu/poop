@@ -1,11 +1,13 @@
 ROOTFS=$(shell pwd)/rootfs
 LINUX=$(shell pwd)/linux
 LIBC=$(shell pwd)/libc
+OUTPUT=$(shell pwd)
 LINUX_VERSION=5.16.12
 LINUX_MAJOR=5
 LIBC_VERSION=2.34
 
 initrd: root kernel libc
+	cd $(ROOTFS) && find . | cpio -R root:root -H newc -o > "${OUTPUT}/initrd.img"
 
 root:
 	@ if [ -d "${ROOTFS}" ]; then \
