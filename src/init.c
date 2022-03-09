@@ -64,7 +64,7 @@ int main()
 
     // set printk to the second level
     int printk = open("/proc/sys/kernel/printk", O_WRONLY | O_APPEND); // append, write only
-    write(printk, "2", 1); // write 2 to /proc/sys/kernel/printk
+    int ret = write(printk, "2", 1); // write 2 to /proc/sys/kernel/printk
     close(printk); // close the file descriptor
 
     loop(); // do the init loop

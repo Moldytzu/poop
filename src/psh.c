@@ -19,9 +19,9 @@ int main()
         else
         {
             char *pathenv = getenv("PATH"); // get path
-            printf("%x\n\n",pathenv);
-            char **argv = split(buffer, ' '); // split at ' '
-            if (executea(argv[0], argv, pathenv) == -69) // execute file
+            printf("%p\n\n",(void*)pathenv);
+            const char **argv = split(buffer, ' '); // split at ' '
+            if (executea(argv[0], (char **)argv, pathenv) == -69) // execute file
             {
                 printf("Unknown command: %s\n", buffer);
                 continue;

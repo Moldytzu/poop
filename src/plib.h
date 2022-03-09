@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include <dirent.h>
 
-static int isempty(const char *s)
+static const int isempty(const char *s)
 {
     while (*s)
     {
@@ -22,7 +22,7 @@ static int isempty(const char *s)
     return 1;
 }
 
-static char **split(char *str, char del)
+static const char **split(char *str, char del)
 {
     int spaces = 0, len = strlen(str);
 
@@ -48,10 +48,10 @@ static char **split(char *str, char del)
 
     splited[cnt++] = 0; // terminate the array
 
-    return splited;
+    return (const char **)splited;
 }
 
-static char *findexec(const char *name, const char *path)
+static const char *findexec(const char *name, const char *path)
 {
     if (*name == '/' || *name == '.')
     {
@@ -60,7 +60,7 @@ static char *findexec(const char *name, const char *path)
         return name;
     }
     printf("%s\n",path);
-    char **pathenv = split(path, ':');
+    char **pathenv = (char **)split((char *)path, ':');
     void *addr = pathenv;
     while (*pathenv)
     {
@@ -79,11 +79,11 @@ static char *findexec(const char *name, const char *path)
     return NULL; // fail
 }
 
-static int executea(const char *path, char *argv[], const char *pathenv)
+static const int executea(const char *path, char *argv[], const char *pathenv)
 {
-    char *fullpath = path;                // full path
+    char *fullpath = (char *)path;                // full path
     if (path[0] != '/' || path[0] != '.') // if we don't provide the full path we try to stick the relative path to the path variable
-        fullpath = findexec(fullpath,pathenv);
+        fullpath = (char *)findexec(fullpath,pathenv);
 
     if (fullpath == NULL) return -69; // fail
 
@@ -106,13 +106,13 @@ static int executea(const char *path, char *argv[], const char *pathenv)
     return status;
 }
 
-static int execute(const char *path, const char *pathenv)
+static const int execute(const char *path, const char *pathenv)
 {
     char *argv[] = {(char *)path, NULL};
     return executea(path, argv, pathenv); // wrap the argv
 }
 
-static char readchar()
+static const char readchar()
 {
     char c = 0;
     while (!read(STDIN_FILENO, &c, 1))
@@ -120,7 +120,7 @@ static char readchar()
     return c; // return character
 }
 
-static int readline(char *buff, int len)
+static const int readline(char *buff, int len)
 {
     for (int i = 0; i < len; i++)
     {

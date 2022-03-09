@@ -1,5 +1,5 @@
 CC = gcc
-CCFLAGS =
+CCFLAGS = -O2
 
 SOURCES = 
 
