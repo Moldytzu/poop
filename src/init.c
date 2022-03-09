@@ -63,7 +63,23 @@ int main()
     setenv("USER", "root", 1); // user root
 
     // setting hostname
-    const char *host = "poop";
+    const char *host = malloc(PATH_MAX); // allocate on heap
+    memset(host,0,PATH_MAX); // clear
+
+    memcpy(host,"poop",strlen("poop")); // copy poop
+
+    if(exists("/etc/host")) // check if /etc/host exists
+    {
+        memset(host,0,PATH_MAX); // clear
+        int h = open("/etc/host",O_RDONLY); // read only
+        read(h,host,PATH_MAX); // read
+        close(h); // close
+    }
+    else
+    {
+        printf("Failed to read hostname from /etc/host. Using default \"poop\"\n");
+    }
+
     sethostname(host,strlen(host));
 
     // set printk to the second level

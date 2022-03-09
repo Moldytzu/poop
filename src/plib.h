@@ -12,6 +12,11 @@
 #include <dirent.h>
 #include <limits.h>
 
+static const int exists(const char *name)
+{
+    return access(name,F_OK) == 0;
+}
+
 static const int isempty(const char *s)
 {
     while (*s)
@@ -56,7 +61,7 @@ static const char *findexec(const char *name, const char *path)
 {
     if (*name == '/' || *name == '.')
     {
-        if(access(name, F_OK) != 0) // if we provide the full path we just check if it exists
+        if(exists(name)) // if we provide the full path we just check if it exists
             return NULL;
         return name;
     }
@@ -66,7 +71,7 @@ static const char *findexec(const char *name, const char *path)
     {
         char buffer[256]; // buffer
         sprintf(buffer, "%s/%s", *pathenv, name);
-        if(access(buffer, F_OK) == 0)
+        if(exists(name))
         {
             char *n = malloc(256); // allocate on heap
             memset(n,0,255); // clear str
