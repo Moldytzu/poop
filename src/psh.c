@@ -7,15 +7,15 @@ int main()
 
     while (1)
     {
-        printf("psh >> "); // write prompt
+        char pwd[PATH_MAX];
+        getcwd(pwd, sizeof(pwd));
+        printf("%s & psh >> ",pwd); // write prompt
         char buffer[256];
         readline(buffer, 256); // read from the keyboard into the buffer
 
         if (isempty(buffer))
             continue; // skip whitespace
 
-        if (strcmp(buffer, "exit") == 0)
-            exit(0); // exit
         else
         {
             char *pathenv = getenv("PATH"); // get path
@@ -24,6 +24,19 @@ int main()
             memcpy(pathn,pathenv,strlen(pathenv)); // copy the contents to it
 
             const char **argv = split(buffer, ' '); // split at ' '
+
+            if (strcmp(argv[0], "exit") == 0) // exit
+                exit(0); // exit
+            
+            if (strcmp(argv[0], "cd") == 0) // change directory
+            {
+                if(chdir(argv[1]) == -1)
+                {
+                    printf("Unknown folder %s\n",argv[1]);
+                }
+                continue;
+            }
+
             if (executea(argv[0], (char **)argv, pathn) == -69) // execute file
             {
                 printf("Unknown command: %s\n", buffer);

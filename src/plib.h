@@ -10,6 +10,7 @@
 #include <time.h>
 #include <ctype.h>
 #include <dirent.h>
+#include <limits.h>
 
 static const int isempty(const char *s)
 {
