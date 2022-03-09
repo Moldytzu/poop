@@ -1,5 +1,5 @@
 CC = gcc
-CCFLAGS = -O2
+CCFLAGS = -O2 -Wno-unused-result
 
 SOURCES = 
 

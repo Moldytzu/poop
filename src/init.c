@@ -62,6 +62,10 @@ int main()
     setenv("PATH", "/bin:/sbin", 1); // path
     setenv("USER", "root", 1); // user root
 
+    // setting hostname
+    const char *host = "poop";
+    sethostname(host,strlen(host));
+
     // set printk to the second level
     int printk = open("/proc/sys/kernel/printk", O_WRONLY | O_APPEND); // append, write only
     int ret = write(printk, "2", 1); // write 2 to /proc/sys/kernel/printk

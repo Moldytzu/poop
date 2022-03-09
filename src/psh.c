@@ -8,8 +8,10 @@ int main()
     while (1)
     {
         char pwd[PATH_MAX];
+        char hostname[PATH_MAX];
         getcwd(pwd, sizeof(pwd));
-        printf("%s & psh >> ",pwd); // write prompt
+        gethostname(hostname, sizeof(hostname));
+        printf("%s@%s:%s %% ",getenv("USER"),hostname,pwd); // write prompt
         char buffer[256];
         readline(buffer, 256); // read from the keyboard into the buffer
 
