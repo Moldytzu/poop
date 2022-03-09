@@ -59,7 +59,6 @@ static const char *findexec(const char *name, const char *path)
             return NULL;
         return name;
     }
-    printf("%s\n",path);
     char **pathenv = (char **)split((char *)path, ':');
     void *addr = pathenv;
     while (*pathenv)

@@ -19,15 +19,19 @@ int main()
         else
         {
             char *pathenv = getenv("PATH"); // get path
-            printf("%p\n\n",(void*)pathenv);
+
+            char *pathn = malloc(strlen(pathenv)+1); // allocate a new pathenv
+            memcpy(pathn,pathenv,strlen(pathenv)); // copy the contents to it
+
             const char **argv = split(buffer, ' '); // split at ' '
-            if (executea(argv[0], (char **)argv, pathenv) == -69) // execute file
+            if (executea(argv[0], (char **)argv, pathn) == -69) // execute file
             {
                 printf("Unknown command: %s\n", buffer);
                 continue;
             }
 
             free(argv); // free argv
+            free(pathn); // free pathn
         }
     }
     return 0;
