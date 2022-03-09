@@ -9,6 +9,7 @@
 #include <stdint.h>
 #include <time.h>
 #include <ctype.h>
+#include <dirent.h>
 
 static unsigned long console = 0; // console file descriptor
 
