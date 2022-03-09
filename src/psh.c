@@ -9,8 +9,9 @@ int main()
     {
         char pwd[PATH_MAX];
         char hostname[PATH_MAX];
-        getcwd(pwd, sizeof(pwd));
-        gethostname(hostname, sizeof(hostname));
+        getcwd(pwd, sizeof(pwd)); // get pwd
+        gethostname(hostname, sizeof(hostname)); // get hostname
+
         printf("%s@%s:%s %% ",getenv("USER"),hostname,pwd); // write prompt
         char buffer[256];
         readline(buffer, 256); // read from the keyboard into the buffer
