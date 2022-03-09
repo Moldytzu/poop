@@ -13,7 +13,7 @@ void loop()
     {
         // execute our shell
         printf("Executing: /bin/psh\n");
-        int status = execute("/bin/psh");
+        int status = execute("psh","/bin");
         if (status != 0)
         {
             printf("Failed. Returned %d", status);
@@ -57,6 +57,10 @@ int main()
         printf("Failed to mount proc.\n");
         hang();
     }
+
+    // setting enviroment variables
+    setenv("PATH", "/bin:/sbin", 1); // path
+    setenv("USER", "root", 1); // user root
 
     // set printk to the second level
     int printk = open("/proc/sys/kernel/printk", O_WRONLY | O_APPEND); // append, write only

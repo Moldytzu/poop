@@ -1,34 +1,5 @@
 #include "plib.h"
 
-char **args(char *cmd)
-{
-    int spaces = 0, len = strlen(cmd);
-
-    for (int i = 0; i < len; i++)
-    {
-        if (cmd[i] == ' ')
-        {               // delimiter
-            cmd[i] = 0; // split
-            spaces++;
-        }
-    }
-
-    char **argv = malloc(sizeof(char *) * ++spaces);
-
-    int arg = 0;
-    argv[arg++] = cmd;
-
-    for (int i = 0; i < len; i++)
-    {
-        if (!cmd[i])
-            argv[arg++] = cmd + i + 1; // offset by i+1
-    }
-
-    argv[arg++] = 0; // terminate the array
-
-    return argv;
-}
-
 int main()
 {
     // disable stdout buffering
@@ -47,14 +18,16 @@ int main()
             exit(0); // exit
         else
         {
-            char **argv = args(buffer);
-            if (access(argv[0], F_OK) != 0) // check if file exists
+            char *pathenv = getenv("PATH"); // get path
+            printf("%x\n\n",pathenv);
+            char **argv = split(buffer, ' '); // split at ' '
+            if (executea(argv[0], argv, pathenv) == -69) // execute file
             {
                 printf("Unknown command: %s\n", buffer);
                 continue;
             }
 
-            executea(argv[0], argv); // execute file
+            free(argv); // free argv
         }
     }
     return 0;

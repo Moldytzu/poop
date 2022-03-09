@@ -11,8 +11,6 @@
 #include <ctype.h>
 #include <dirent.h>
 
-static unsigned long console = 0; // console file descriptor
-
 static int isempty(const char *s)
 {
     while (*s)
@@ -24,14 +22,79 @@ static int isempty(const char *s)
     return 1;
 }
 
-static int executea(const char *path, char *argv[])
+static char **split(char *str, char del)
 {
+    int spaces = 0, len = strlen(str);
+
+    for (int i = 0; i < len; i++)
+    {
+        if (str[i] == del)
+        {               // delimiter
+            str[i] = 0; // split
+            spaces++;
+        }
+    }
+
+    char **splited = malloc(sizeof(char *) * ++spaces);
+
+    int cnt = 0;
+    splited[cnt++] = str;
+
+    for (int i = 0; i < len; i++)
+    {
+        if (!str[i])
+            splited[cnt++] = str + i + 1; // offset by i+1
+    }
+
+    splited[cnt++] = 0; // terminate the array
+
+    return splited;
+}
+
+static char *findexec(const char *name, const char *path)
+{
+    if (*name == '/' || *name == '.')
+    {
+        if(access(name, F_OK) != 0) // if we provide the full path we just check if it exists
+            return NULL;
+        return name;
+    }
+    printf("%s\n",path);
+    char **pathenv = split(path, ':');
+    void *addr = pathenv;
+    while (*pathenv)
+    {
+        char buffer[256]; // buffer
+        sprintf(buffer, "%s/%s", *pathenv, name);
+        if(access(buffer, F_OK) == 0)
+        {
+            char *n = malloc(256); // allocate on heap
+            memset(n,0,255); // clear str
+            memcpy(n,buffer,strlen(buffer)); // copy
+            return n; // return it
+        }
+        pathenv++;
+    }
+    free(addr); // free
+    return NULL; // fail
+}
+
+static int executea(const char *path, char *argv[], const char *pathenv)
+{
+    char *fullpath = path;                // full path
+    if (path[0] != '/' || path[0] != '.') // if we don't provide the full path we try to stick the relative path to the path variable
+        fullpath = findexec(fullpath,pathenv);
+
+    if (fullpath == NULL) return -69; // fail
+
+    argv[0] = fullpath; // set to the full path
+
     int pid;
     switch (pid = vfork()) // spawn child
     {
     case 0: // child
     {
-        execv(path, argv); // execute
+        execv(fullpath, argv); // execute
         break;
     }
     default:
@@ -43,19 +106,17 @@ static int executea(const char *path, char *argv[])
     return status;
 }
 
-static int execute(const char *path)
+static int execute(const char *path, const char *pathenv)
 {
     char *argv[] = {(char *)path, NULL};
-    return executea(path, argv); // wrap the argv
+    return executea(path, argv, pathenv); // wrap the argv
 }
 
 static char readchar()
 {
     char c = 0;
-    if (console == 0)
-        open("/dev/console", O_RDWR | O_NDELAY); // open console
-    while (!read(console, &c, 1))
-        ;     // wait for a byte
+    while (!read(STDIN_FILENO, &c, 1))
+        ;     // wait for a byte from stdin
     return c; // return character
 }
 
